@@ -5,9 +5,6 @@ commonLabels:
 repositories:
  - name: mittwald
    url: https://helm.mittwald.de
- - name: basic-bundle
-   # git+ssh means that the helmfile should use a git repo. see @charts for path
-   url: git+ssh://git@github.com/morero/helm@charts?ref=main
  - name: grafana
    url: https://grafana.github.io/helm-charts
  - name: bitnami
@@ -18,7 +15,7 @@ repositories:
 releases:
 - name: cilium
   namespace: kube-system
-  chart: basic-bundle/cilium
+  chart: ../../charts/cilium
   condition: cilium.enabled
   values:
     - &env env-magic.gotmpl # use a YAML anchor for DRYness
@@ -26,7 +23,7 @@ releases:
 - name: postgres-operator
   condition: postgres.enabled
   namespace: postgres
-  chart: basic-bundle/cloudnative-pg
+  chart: ../../charts/cloudnative-pg
   values:
     - *env # reference the anchor
   wait: true
@@ -35,7 +32,7 @@ releases:
 - name: database-cluster
   condition: postgres.enabled
   namespace: postgres
-  chart: basic-bundle/database-cluster
+  chart: ../../charts/database-cluster
   values:
     - *env # reference the anchor
   needs: 
@@ -51,7 +48,7 @@ releases:
   disableValidation: true
   condition: monitoring.enabled
   namespace: monitoring
-  chart: basic-bundle/kube-prometheus
+  chart: ../../charts/kube-prometheus
   values:
     - *env # reference the anchor
   wait: true
@@ -59,7 +56,7 @@ releases:
   condition: monitoring.enabled
   disableValidation: true
   namespace: monitoring
-  chart: basic-bundle/grafana-operator
+  chart: ../../charts/grafana-operator
   disableOpenAPIValidation: true
   values:
     - *env # reference the anchor
@@ -67,14 +64,14 @@ releases:
   condition: monitoring.enabled
   namespace: monitoring
   disableValidation: true
-  chart: basic-bundle/grafana-loki
+  chart: ../../charts/grafana-loki
   values:
     - *env # reference the anchor
 - name: cert-manager
   condition: cert-manager.enabled
   disableValidation: true
   namespace: cert-manager
-  chart: basic-bundle/cert-manager
+  chart: ../../charts/cert-manager
   values:
     - *env # reference the anchor
   
@@ -90,7 +87,7 @@ releases:
 - name: vaultwarden-database
   condition: vaultwarden.enabled
   namespace: postgres
-  chart: basic-bundle/database-vaultwarden
+  chart: ../../charts/database-vaultwarden
   values:
     - *env # reference the anchor
   needs: 
@@ -99,7 +96,7 @@ releases:
 - name: vaultwarden
   condition: vaultwarden.enabled
   namespace: vaultwarden
-  chart: basic-bundle/vaultwarden
+  chart: ../../charts/vaultwarden
   values:
     - *env # reference the anchor
   needs: 
@@ -108,7 +105,7 @@ releases:
 - name: gitea-database
   condition: gitea.enabled
   namespace: postgres
-  chart: basic-bundle/database-gitea
+  chart: ../../charts/database-gitea
   values:
     - *env # reference the anchor
   needs: 
@@ -117,7 +114,7 @@ releases:
 - name: gitea
   condition: gitea.enabled
   namespace: gitea
-  chart: basic-bundle/gitea
+  chart: ../../charts/gitea
   values:
     - *env # reference the anchor  
   needs: 
